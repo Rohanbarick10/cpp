@@ -1,0 +1,95 @@
+1. Using taskset (Linux):
+On Linux, you can use the taskset command to set the CPU affinity of a process, restricting it to a single core.
+
+Compile your program (e.g., g++ program.cpp -o program).
+
+Run the program with taskset:
+
+taskset -c 0 ./program
+
+
+This will bind the program to core 0 (you can change the core number to any core index).
+
+2. Using sched_setaffinity() in the C++ code (Linux):
+You can also set CPU affinity programmatically in your C++ code using the sched_setaffinity() system call.
+
+Here is an example of how to restrict the program to a single core:
+
+
+#define _GNU_SOURCE
+#include <iostream>
+#include <sched.h>
+#include <unistd.h>
+
+int main() {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset); // Clear the set
+    CPU_SET(0, &cpuset); // Add CPU 0 to the set
+
+    // Get the current process ID
+    pid_t pid = getpid();
+
+    // Set the CPU affinity for the process
+    if (sched_setaffinity(pid, sizeof(cpu_set_t), &cpuset) != 0) {
+        std::cerr << "Error setting CPU affinity." << std::endl;
+        return -1;
+    }
+
+    // Your code here
+    std::cout << "Running on a single core!" << std::endl;
+
+    return 0;
+}
+
+
+. Using SetProcessAffinityMask() (Windows):
+On Windows, you can use the SetProcessAffinityMask() function to limit a program to one core.
+
+Here’s an example of how you could restrict execution to the first core:
+
+
+#include <iostream>
+#include <windows.h>
+
+int main() {
+    // Get the current process handle
+    HANDLE process = GetCurrentProcess();
+
+    // Set the process affinity to the first core (core 0)
+    if (!SetProcessAffinityMask(process, 1)) {
+        std::cerr << "Error setting CPU affinity." << std::endl;
+        return -1;
+    }
+
+    // Your code here
+    std::cout << "Running on a single core!" << std::endl;
+
+    return 0;
+}
+
+
+4. Disabling Multithreading in Your Code:
+If you're using multithreading libraries like OpenMP or pthreads, you might want to ensure that your program only uses one thread. For OpenMP, you can do this by setting the environment variable OMP_NUM_THREADS=1 or calling omp_set_num_threads(1) in the code.
+
+For example:
+
+#include <omp.h>
+#include <iostream>
+
+int main() {
+    omp_set_num_threads(1); // Set to use only 1 thread
+
+    #pragma omp parallel
+    {
+        std::cout << "Thread ID: " << omp_get_thread_num() << std::endl;
+    }
+
+    return 0;
+}
+
+
+Summary:
+Linux: Use taskset or sched_setaffinity().
+Windows: Use SetProcessAffinityMask().
+Ensure your code isn’t using multithreading if you want truly single-core behavior.
+These methods ensure that your C++ program runs on a single core, even when executed on a multicore processor.
