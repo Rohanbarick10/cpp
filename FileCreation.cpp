@@ -1,14 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <cstdlib> // For rand()
-#include <ctime>   // For time()
 
 int main() {
-    // Seed the random number generator
-    std::srand(std::time(0));
-
-    std::ofstream outputFile("generated_data.csv");
+    std::ofstream outputFile("generated_data.csv"); // can be renamed as per requirements
     if (!outputFile.is_open()) {
         std::cerr << "Error: Could not open output file!" << std::endl;
         return 1;
@@ -16,11 +11,11 @@ int main() {
 
     outputFile << "index,value\n"; // Header line
 
-    const int numEntries = 100000; // Number of entries to generate
+    const int numEntries = 100000; // Number of entries to generate, can be adjust as per requrements
 
     for (int i = 0; i < numEntries; ++i) {
-        // Generate a random integer value
-        int value = i; // Random values between 0 and 999999
+        // inputting integer value
+        int value = 100+i; // can be assign as per choice
         outputFile << i << "," << value << "\n";
     }
 
