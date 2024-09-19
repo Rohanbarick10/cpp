@@ -68,10 +68,13 @@ int main() {
 
     inputFile.close();
 
-    if (arr.empty()) {
+    // Check if data was successfully read
+    int numEntries = arr.size();
+    if (numEntries == 0) {
         cerr << "The file is empty or contains no valid data!" << endl;
         return 1;
     }
+
 
     int x, numTests;
     // Input the element to search for
@@ -84,32 +87,31 @@ int main() {
     long long totalTime = 0;  // To store the total time taken for all tests
     int result = -1;  // To store the result of the binary search
 
-     // Get start time
-        auto start = high_resolution_clock::now();
-    for (int i = 0; i < numTests; ++i) {
-       
+    // Get start time
+    auto start = high_resolution_clock::now();
 
+    for (int i = 0; i < numTests; ++i) {
         // Perform binary search
         result = binarySearch(arr, 0, arr.size() - 1, x);
-
     }
 
-      // Get end time
-        auto stop = high_resolution_clock::now();
+    // Get end time
+    auto stop = high_resolution_clock::now();
 
-        // Calculate duration in nanoseconds
-        auto duration = duration_cast<nanoseconds>(stop - start).count();
+    // Calculate duration in nanoseconds
+    auto duration = duration_cast<nanoseconds>(stop - start).count();
     // Calculate average time
     long long avgTime = duration / numTests;
 
-    // Output the result
+    // Output the result of the search
     if (result != -1) {
         cout << "Element found at index (file index): " << arr[result].index << " with value: " << arr[result].value << endl;
     } else {
         cout << "Element not found" << endl;
     }
 
-    // Output average time
+    // Output the average time taken and number of entries
+    cout << "Binary search performed on " << numEntries << " entries." << endl;
     cout << "Average time taken by binary search: " << avgTime << " nanoseconds" << endl;
 
     return 0;
